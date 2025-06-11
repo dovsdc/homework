@@ -1,10 +1,33 @@
-use rand::Rng;
+use std::io;
+use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn run() {
-    let mut rng = rand::thread_rng();
-    let data: Vec<i32> = (0..20).map(|_| rng.gen_range(10..=100)).collect();
+fn simple_random(seed: &mut u64) -> u32 {
+    // Простейший линейный конгруэнтный генератор
+    *seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+    ((*seed >> 32) as u32) % 91 + 10  // в диапазоне [10, 100]
+}
 
-    println!("indexes: {}", (0..20).map(|i| format!("{:>2}.", i)).collect::<Vec<_>>().join("  "));
+fn main() {
+    let mut seed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos() as u64;
+
+    let data_len = 20;
+    let mut data = Vec::new();
+
+    for _ in 0..data_len {
+        data.push(simple_random(&mut seed) as i32);
+    }
+
+    println!(
+        "indexes: {}",
+        (0..data_len)
+            .map(|i| format!("{:>2}.", i))
+            .collect::<Vec<_>>()
+            .join("  ")
+    );
+
     println!("data:   {:?}", data);
 
     if data.len() < 2 {
@@ -17,7 +40,7 @@ pub fn run() {
         if sum < min_sum {
             min_sum = sum;
             min_index = i;
-       }
+        }
     }
 
     println!(
@@ -28,10 +51,10 @@ pub fn run() {
 
     println!(
         "min adjacent sum={}+{}={} at indexes:{},{}",
-    data[min_index],
-    data[min_index + 1],
-    min_sum,
-    min_index,
-    min_index + 1
+        data[min_index],
+        data[min_index + 1],
+        min_sum,
+        min_index,
+        min_index + 1
     );
 }
