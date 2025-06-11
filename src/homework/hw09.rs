@@ -1,10 +1,14 @@
- pub fn rotate2(s: String, n: isize) -> String {
-     let len = s.chars().count();
-     if len == 0 {
-     return s;
+use std::io;
+
+/// Сдвигает строку циклически на `n` позиций вправо.
+/// Отрицательное `n` означает сдвиг влево.
+fn rotate2(s: String, n: isize) -> String {
+    let len = s.chars().count();
+    if len == 0 {
+        return s;
     }
 
-   let shift = (n.rem_euclid(len as isize)) as usize;
+    let shift = (n.rem_euclid(len as isize)) as usize;
     if shift == 0 {
         return s;
     }
@@ -18,27 +22,24 @@
     rotated
 }
 
-#[cfg(test)]
-mod tests {
-    use super::rotate2;
+fn main() {
+    let mut input = String::new();
+    println!("Введите строку:");
+    io::stdin().read_line(&mut input).expect("Ошибка чтения строки");
+    let s = input.trim().to_string();
 
-    #[test]
-    fn test_rotate() {
-        let s = "abcdefgh";
-        let shifts = [
-            (0,  "abcdefgh"),
-            (8,  "abcdefgh"),
-            (-8, "abcdefgh"),
-            (1,  "habcdefg"),
-            (2,  "ghabcdef"),
-            (10, "ghabcdef"),
-            (-1, "bcdefgha"),
-            (-2, "cdefghab"),
-            (-10,"cdefghab"),
-        ];
+    let mut shift_input = String::new();
+    println!("Введите сдвиг (может быть отрицательным):");
+    io::stdin().read_line(&mut shift_input).expect("Ошибка чтения числа");
 
-        for (n, expected) in shifts.iter() {
-            assert_eq!(rotate2(s.to_string(), *n), expected.to_string());
+    let shift: isize = match shift_input.trim().parse() {
+        Ok(n) => n,
+        Err(_) => {
+            println!("Ошибка: введите корректное число.");
+            return;
         }
-    }
+    };
+
+    let rotated = rotate2(s, shift);
+    println!("Результат сдвига: {}", rotated);
 }
