@@ -1,20 +1,25 @@
+const HEIGHT: usize = 6; // Висота від центру до верхівки (включно)
+const WIDTH: usize = 2 * HEIGHT - 1;
+
 fn main() {
-    const N: usize = 6; // задаёт количество строк в верхней части ромба
-    let mut diamond = String::new();
+    for row in 0..(2 * HEIGHT - 1) {
+        for col in 0..WIDTH {
+            let midpoint = HEIGHT - 1;
+            let dist = if row < HEIGHT {
+                row
+            } else {
+                2 * HEIGHT - 2 - row
+            };
+            let start = midpoint - dist;
+            let end = midpoint + dist;
 
-    // Формируем верхнюю часть ромба (включая центральную строку)
-    for i in 1..=N {
-        let spaces = " ".repeat(N - i);
-        let stars = "*".repeat(2 * i - 1);
-        diamond.push_str(&format!("{}{}\n", spaces, stars));
+            let ch = if col >= start && col <= end {
+                '*'
+            } else {
+                ' '
+            };
+            print!("{}", ch);
+        }
+        println!();
     }
-    // Формируем нижнюю часть ромба
-    for i in (1..N).rev() {
-        let spaces = " ".repeat(N - i);
-        let stars = "*".repeat(2 * i - 1);
-        diamond.push_str(&format!("{}{}\n", spaces, stars));
-    }
-
-    // Выводим результат одним вызовом print!
-    print!("{}", diamond);
 }
